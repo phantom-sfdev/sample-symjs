@@ -1,3 +1,5 @@
-app:
-    resource: @AppBundle/Controller/
-    type:     annotation
+acme_chat:
+    resource: "@AcmeChatBundle/Resources/config/routing.yml"
+    prefix:   /
+
+

@@ -20,3 +20,8 @@ _main:
 # AcmeDemoBundle routes (to be removed)
 _acme_demo:
     resource: "@AcmeDemoBundle/Resources/config/routing.yml"
+
+app:
+    resource: @AppBundle/Controller/
+    type:     annotation
+

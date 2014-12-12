@@ -1,3 +1,4 @@
+#Symfony default
 /web/bundles/
 /app/bootstrap.php.cache
 /app/cache/*
@@ -10,3 +11,16 @@
 /vendor/
 /bin/
 /composer.phar
+
+# Configuration files
+/app/config/parameters.yml
+
+# Composer
+/composer.phar
+/composer.lock
+
+# Debug
+/web/__dbg
+
+# JetBrains IDE
+.idea/

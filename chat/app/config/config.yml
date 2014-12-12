@@ -24,6 +24,7 @@ framework:
         handler_id:  ~
     fragments:       ~
     http_method_override: true
+    translator: ~
 
 # Twig Configuration
 twig:
@@ -71,3 +72,9 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+#FOS User Bundle settings
+fos_user:
+  db_driver: orm
+  firewall_name: main
+  user_class: Acme\ChatBundle\Entity\User

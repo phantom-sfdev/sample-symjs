@@ -21,9 +21,10 @@ $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 Debug::enable();
 
 require_once __DIR__.'/../app/AppKernel.php';
+require_once __DIR__.'/debug.php';
 
 $kernel = new AppKernel('dev', true);
-$kernel->loadClassCache();
+//$kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
