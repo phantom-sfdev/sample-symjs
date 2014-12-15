@@ -27,7 +27,7 @@ class ChatMessages
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime", options={"comment":"Timestamp when message was posted"})
+     * @ORM\Column(type="integer", options={"unsigned":true, "default":0, "comment":"Timestamp when message was posted"})
      */
     protected $posted;
 

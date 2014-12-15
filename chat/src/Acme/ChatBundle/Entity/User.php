@@ -5,7 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Acme\ChatBundle\Entity\UserRepository")
  * @ORM\Table(name="users")
  */
 class User
@@ -29,7 +29,7 @@ class User
     /**
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned":true, "default":0})
      */
     protected $registered;
 
