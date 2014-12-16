@@ -4,7 +4,7 @@ namespace Acme\ChatBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Acme\ChatBundle\Entity\ChatMessagesRepository")
  * @ORM\Table(name="chat_messages")
  */
 class ChatMessages

@@ -1,6 +1,11 @@
 _api_chat_user:
     resource: "@AcmeChatBundle/Controller/UserController.php"
     type: annotation
-    prefix: /chatroom/v1
+    prefix: /v1
+
+_api_chat_messages:
+    resource: "@AcmeChatBundle/Controller/ChatMessagesController.php"
+    type: annotation
+    prefix: /v1
 
 

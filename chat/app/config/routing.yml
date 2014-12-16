@@ -1,5 +1,9 @@
 acme_chat:
     resource: "@AcmeChatBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /chatroom
+
+nelmio_api_doc_bundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /chatroom/api/v1/doc
 
 

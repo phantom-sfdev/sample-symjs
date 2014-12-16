@@ -78,3 +78,6 @@ fos_user:
   db_driver: orm
   firewall_name: main
   user_class: Acme\ChatBundle\Entity\User
+
+#Nelmio ApiDoc Bundle
+nelmio_api_doc: ~

@@ -13,18 +13,18 @@ use Doctrine\DBAL\Types\Type;
  */
 class UserRepository extends EntityRepository
 {
-    public function findAllUsersOrderById(){
+    public function findAllUsersOrderByName(){
         return $this->getEntityManager()
             ->createQuery(
-                'SELECT cu.id, cu.user_name FROM AcmeChatBundle:User cu ORDER BY cu.id ASC'
+                'SELECT cu.id, cu.user_name FROM AcmeChatBundle:User cu ORDER BY cu.user_name ASC'
             )->getResult();
     }
 
-    public function findUserByName($username){
+    public function findUserIdByName($username){
 
         $query = $this->getEntityManager()
             ->createQueryBuilder()
-            ->select("cu.user_name")
+            ->select("cu.id")
             ->from("AcmeChatBundle:User", "cu")
             ->where("cu.user_name = :username")
             ->setParameter(":username", $username, Type::STRING)
@@ -36,4 +36,21 @@ class UserRepository extends EntityRepository
             return false;
         }
     }
+
+    /*public function getUserObjectByUserName($username){
+
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select("cu")
+            ->from("AcmeChatBundle:User", "cu")
+            ->where("cu.user_name = :username")
+            ->setParameter(":username", $username, Type::STRING)
+            ->getQuery();
+
+        try {
+            return $query->getResult();
+        } catch (\Doctrine\ORM\NoResultException $e) {
+            return false;
+        }
+    }*/
 }
