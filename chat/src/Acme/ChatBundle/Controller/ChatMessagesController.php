@@ -24,6 +24,9 @@ class ChatMessagesController extends Controller
      * @ApiDoc(
      * resource=false,
      * description="Load chat messages by a time",
+     * requirements={
+     *      {"name"="min", "dataType"="integer", "requirement"="\d+", "description"="Number of minutes to load messages"}
+     * },
      * statusCodes = {
      *      200="Ok",
      *      400="Bad request",
@@ -36,22 +39,34 @@ class ChatMessagesController extends Controller
     public function loadChatAction(Request $request){
 
         $minLoad = $request->query->get('min', 10);
+        $session = new Session();
 
-        $endDate = time(); //current timestamp
-        $startDate = $endDate - ($minLoad * 60);
+        $current_timestamp = time();
+
+        $startDate = $current_timestamp - ($minLoad * 60);
+        //$endDate = $current_timestamp;
 
         $chat_loaded_messages = array();
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        /** @var ChatMessages[] $messages_repo */
-        $messages = $em->getRepository("AcmeChatBundle:ChatMessages")->getMessagesByTime($startDate, $endDate);
-        var_dump(count($messages));
-        foreach($messages as $message_obj){
-            var_dump($message_obj->getMsg());
+        /** @var ChatMessages[] $messages */
+        $messages = $em->getRepository("AcmeChatBundle:ChatMessages")->getMessagesByTime($startDate);
+        $session->set('last_successful_msg_loaded_time', $current_timestamp);
+
+        if (count($messages)){
+            foreach($messages as $message_obj){
+                $chat_loaded_messages[] = array(
+                    'user_id' => $message_obj->getUser()->getId(),
+                    'user_name' => $message_obj->getUser()->getUserName(),
+                    'message' => $message_obj->getMsg(),
+                    'posted_date' => $message_obj->getPosted(),
+                );
+            }
+
+
         }
-        //var_dump($messages_repo);
 
         $response = new JsonResponse();
         $response->setData(array('loaded_messages' => $chat_loaded_messages));
@@ -70,7 +85,7 @@ class ChatMessagesController extends Controller
      * )
      *
      */
-    function postMessageAction(Request $request){
+    public function postMessageAction(Request $request){
 
         $posted_time = time();
         $session = new Session();
@@ -114,5 +129,57 @@ class ChatMessagesController extends Controller
 
         return $response;
 
+    }
+
+    /**
+     * @Route("/getupdate", name="_api_chat_get_chat_update", defaults={"timestamp" = null})
+     * @Route("/g", name="_api_chat_get_update_alias", defaults={"timestamp" = null})
+     * @Template()
+     * @Method("GET")
+     *
+     * @ApiDoc(
+     *  resource=false,
+     *  description="Update chat messages",
+     *  requirements={
+     *      {"name"="timestamp", "dataType"="integer", "requirement"="\d+", "description"="Latest timestamp when successful GetUpdate or LoadChat has been performed"}
+     *  }
+     * )
+     */
+    public function getUpdateAction($timestamp){
+
+        $new_messages = array();
+        $startDate = null;
+
+        $session = new Session();
+
+        if (isset($timestamp)) {
+            $startDate = $timestamp;
+        } else {
+            $startDate = $session->get('last_successful_msg_loaded_time');
+        }
+
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var ChatMessages[] $messages */
+        $messages = $em->getRepository("AcmeChatBundle:ChatMessages")->getMessagesByTime($startDate);
+        $session->set('last_successful_msg_loaded_time', time());
+        $session->remove('last_succesful_msg_loaded_time');
+
+        if (count($messages)){
+            foreach($messages as $message_obj){
+                $new_messages[] = array(
+                    'user_id' => $message_obj->getUser()->getId(),
+                    'user_name' => $message_obj->getUser()->getUserName(),
+                    'message' => $message_obj->getMsg(),
+                    'posted_date' => $message_obj->getPosted(),
+                );
+            }
+        }
+
+        $response = new JsonResponse();
+        $response->setData(array('loaded_messages' => $new_messages));
+
+        return $response;
     }
 }

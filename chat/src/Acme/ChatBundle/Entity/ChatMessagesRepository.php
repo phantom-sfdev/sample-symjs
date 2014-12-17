@@ -18,15 +18,17 @@ class ChatMessagesRepository extends EntityRepository
      * @param $endDate
      * @return ChatMessages[]|null
      */
-    public function getMessagesByTime($startDate, $endDate){
+    public function getMessagesByTime($startDate, $endDate = null){
+
+        /*->andWhere("cm.posted <= :endDate")*/
+        /*->setParameter(":endDate", $endDate, Type::INTEGER)*/
 
         $query = $this->createQueryBuilder("cm")
             ->select("cm", "cu")
             ->join("cm.user", "cu")
             ->where("cm.posted >= :startDate")
-            ->andWhere("cm.posted <= :endDate")
+            ->orderBy("cm.posted", "ASC")
             ->setParameter(":startDate", $startDate, Type::INTEGER)
-            ->setParameter(":endDate", $endDate, Type::INTEGER)
             ->getQuery();
 
         try {
