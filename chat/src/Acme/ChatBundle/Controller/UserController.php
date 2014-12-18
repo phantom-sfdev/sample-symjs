@@ -25,6 +25,7 @@ class UserController extends Controller
         $user_allowed = false;
         $message = "";
 
+        /** @var Session $session */
         $session = new Session();
         $session->start();
 
@@ -44,6 +45,7 @@ class UserController extends Controller
             throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException("Bad request. You did not specify a username.");
         }
 
+        /** @var User[] $registered_user */
         $registered_user = $em->getRepository('AcmeChatBundle:User')->findUserIdByName($username);
 
         if (!count($registered_user)) {

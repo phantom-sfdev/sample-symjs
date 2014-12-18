@@ -2,3 +2,7 @@ services:
 #    acme_chat.example:
 #        class: Acme\ChatBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+    kernel.listener.acme_api_chat_json_exception:
+        class: Acme\ChatBundle\EventListener\AcmeChatExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }

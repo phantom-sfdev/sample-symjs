@@ -150,6 +150,8 @@ class ChatMessagesController extends Controller
         $new_messages = array();
         $startDate = null;
 
+        $errors = array();
+
         $session = new Session();
 
         if (isset($timestamp)) {
@@ -164,7 +166,6 @@ class ChatMessagesController extends Controller
         /** @var ChatMessages[] $messages */
         $messages = $em->getRepository("AcmeChatBundle:ChatMessages")->getMessagesByTime($startDate);
         $session->set('last_successful_msg_loaded_time', time());
-        $session->remove('last_succesful_msg_loaded_time');
 
         if (count($messages)){
             foreach($messages as $message_obj){
