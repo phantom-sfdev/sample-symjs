@@ -9,7 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Acme\ChatBundle\Entity\ChatMessages;
-use Symfony\Component\HttpFoundation\Session\Session;
+//use Symfony\Component\HttpFoundation\Session\Session;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -39,7 +39,7 @@ class ChatMessagesController extends Controller
     public function loadChatAction(Request $request){
 
         $minLoad = $request->query->get('min', 10);
-        $session = new Session();
+        $session = $this->get('request')->getSession();
 
         $current_timestamp = time();
 
@@ -88,7 +88,7 @@ class ChatMessagesController extends Controller
     public function postMessageAction(Request $request){
 
         $posted_time = time();
-        $session = new Session();
+        $session = $this->get('request')->getSession();
         $errors = array();
         $message_posted = true;
 
@@ -152,7 +152,7 @@ class ChatMessagesController extends Controller
 
         $errors = array();
 
-        $session = new Session();
+        $session = $this->get('request')->getSession();
 
         if (isset($timestamp)) {
             $startDate = $timestamp;

@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Acme\ChatBundle\Entity\User;
-use Symfony\Component\HttpFoundation\Session\Session;
+//use Symfony\Component\HttpFoundation\Session\Session;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -25,21 +25,9 @@ class UserController extends Controller
         $user_allowed = false;
         $message = "";
 
-        /** @var Session $session */
-        $session = new Session();
-        $session->start();
+        $session = $this->get('request')->getSession();
 
         $em = $this->getDoctrine()->getManager();
-
-        /*$query = $em->createQuery(
-            'SELECT u.id, u.user_name FROM AcmeChatBundle:User as u
-            WHERE u.user_name = :username
-            ORDER BY u.id ASC'
-        )->setParameter('username', $username);
-
-        $registered_user = $query->getResult();*/
-
-        //$registered_user = $em->getRepository('AcmeChatBundle:User')->findAllUsersOrderById();
 
         if (empty($username)) {
             throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException("Bad request. You did not specify a username.");
@@ -75,11 +63,9 @@ class UserController extends Controller
      */
     public function listUsersAction(){
 
-        $session = new Session();
+        $session = $this->get('request')->getSession();
 
         $uname_in_session = $session->get('chat_symjs_uname');
-
-        //$session->remove('chat_symjs_uname');
 
         $em = $this->getDoctrine()->getManager();
 

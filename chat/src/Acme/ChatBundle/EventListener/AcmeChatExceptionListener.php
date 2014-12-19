@@ -9,30 +9,36 @@ class AcmeChatExceptionListener
 {
     public function onKernelException(GetResponseForExceptionEvent $event){
 
-        // Get the exception object from the received event
-        $exception = $event->getException();
+        $request = $event->getRequest();
 
-        $exception_content = array(
-            'errors' => array(
-                'message' => $exception->getMessage(),
-            ),
-        );
+        if ($request->isXmlHttpRequest() || (stripos($request->getPathInfo(), '/chatroom') !== false)) {
+            // Get the exception object from the received event
+            $exception = $event->getException();
+
+            $exception_content = array(
+                'errors' => array(
+                    'message' => $exception->getMessage(),
+                ),
+            );
 
 
-        // Customize our response object to display the exception details
-        $response = new JsonResponse();
-        $response->setData($exception_content);
+            // Customize our response object to display the exception details
+            $response = new JsonResponse();
+            $response->setData($exception_content);
 
-        // HttpExceptionInterface is a special type of exception that
-        // holds status code and header details
-        if ($exception instanceof HttpExceptionInterface) {
-            $response->setStatusCode($exception->getStatusCode());
-            $response->headers->replace($exception->getHeaders());
-        } else {
-            $response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            // HttpExceptionInterface is a special type of exception that
+            // holds status code and header details
+            if ($exception instanceof HttpExceptionInterface) {
+                $response->setStatusCode($exception->getStatusCode());
+                $response->headers->replace($exception->getHeaders());
+            } else {
+                $response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            // Send the modified response object to the event
+            $event->setResponse($response);
+
         }
 
-        // Send the modified response object to the event
-        $event->setResponse($response);
     }
 }
