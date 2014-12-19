@@ -87,7 +87,6 @@ class ChatMessagesController extends Controller
      */
     public function postMessageAction(Request $request){
 
-        $posted_time = time();
         $session = $this->get('request')->getSession();
         $errors = array();
         $message_posted = true;
@@ -97,16 +96,15 @@ class ChatMessagesController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        if (!isset($message)) $errors[] = "No message";
-        if (!isset($uname_in_session)) {
-            $errors[] = "No username in session";
-        } else {
-            $user_entity = $em->getRepository("AcmeChatBundle:User")->findOneBy(array('user_name' => $uname_in_session));
+        if (!isset($message)) throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException("Bad request. You did not specify a message.");
+        if (!isset($uname_in_session)) throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException("Bad request. Can't find username in Session.");
 
-            if (!$user_entity) $errors[] = "Can't find User by username";
-        }
+        $user_entity = $em->getRepository("AcmeChatBundle:User")->findOneBy(array('user_name' => $uname_in_session));
 
-        if (!count($errors)) {
+        if (!$user_entity) throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Could not found username in our system");
+
+
+        /*if (!count($errors)) {*/
 
             $new_message  = new ChatMessages();
             $new_message->setMsg($message);
@@ -116,16 +114,16 @@ class ChatMessagesController extends Controller
             $em->persist($new_message);
             $em->flush();
 
-            $statusCode = 200;
+        /*    $statusCode = 200;
             $statusMsg = "Ok";
         } else {
             $message_posted = false;
             $statusCode = 400;
             $statusMsg = "Bad request";
-        }
+        }*/
 
         $response = new JsonResponse();
-        $response->setData(array('message_posted' => $message_posted, "errors" => $errors, "total_errors" => count($errors)));
+        $response->setData(array('message_posted' => $message_posted));
 
         return $response;
 
